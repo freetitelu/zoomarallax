@@ -17,7 +17,7 @@
             for (var i = 0; i < img.length; i++) {
                 var initLgImg = document.createElement('img');
                 initLgImg.className = 'zoomarallax_img';
-                initLgImg.style.cssText='position: absolute; top: 0; left: 0';
+                initLgImg.style.cssText='position: absolute; top: 0; left: 0; max-width: 100%';
 
                 var wrap = document.createElement('div');
                 wrap.className = 'zoomarallax';
@@ -31,8 +31,8 @@
             var zx = document.getElementsByClassName('zoomarallax');
             var zxWidth;
             var zxHeight;
-            var imgX = 0;
-            var imgY = 0;
+            var lgImgX = 0;
+            var lgImgY = 0;
             var smImg;
             var lgImg;
             var mouseX;
@@ -62,9 +62,9 @@
                     mouseY = event.clientY - this.getBoundingClientRect().top;
 
                     //if(imgRectWidth > zxWidth && imgRectHeight >  zxHeight){
-                        imgX = mouseX * -((lgImg.width - zxWidth) / zxWidth);
-                        imgY = mouseY * -((lgImg.height - zxHeight) / zxHeight);
-                        lgImg.style.transform = 'translate(' + (imgX) + 'px,' + (imgY) + 'px)';
+                        lgImgX = mouseX * -((lgImg.width - zxWidth) / zxWidth);
+                        lgImgY = mouseY * -((lgImg.height - zxHeight) / zxHeight);
+                        lgImg.style.transform = 'translate(' + (lgImgX) + 'px,' + (lgImgY) + 'px)';
 
                     //}
                 });
