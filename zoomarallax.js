@@ -17,7 +17,7 @@
             for (var i = 0; i < img.length; i++) {
                 var initLgImg = document.createElement('img');
                 initLgImg.className = 'zoomarallax_img';
-                initLgImg.style.cssText='position: absolute; max-width:100%';
+                initLgImg.style.cssText='position: absolute; top: 0; left: 0';
 
                 var wrap = document.createElement('div');
                 wrap.className = 'zoomarallax';
@@ -28,47 +28,57 @@
                 wrap.innerHTML += initLgImg.outerHTML;
             }
 
-            var zxWrap = document.getElementsByClassName('zoomarallax');
-            for (var i = 0; i < zxWrap.length; i++) {
-                zxWrap[i].addEventListener('mousemove', function (event) {
-                    var smImg = this.firstChild;
-                    var lgImg = this.lastChild;
-                    var imgX = 0;
-                    var imgY = 0;
-                    var wrapRectWidth = smImg.width;
-                    var wrapRectHeight = smImg.height;
-                    var imgRectWidth = lgImg.getBoundingClientRect().width;
-                    var imgRectHeight = lgImg.getBoundingClientRect().height;
-                    var mouseX = event.clientX - this.getBoundingClientRect().left;
-                    var mouseY = event.clientY - this.getBoundingClientRect().top;
+            var zx = document.getElementsByClassName('zoomarallax');
+            var zxWidth;
+            var zxHeight;
+            var imgX = 0;
+            var imgY = 0;
+            var smImg;
+            var lgImg;
+            var mouseX;
+            var mouseY;
 
-                    this.style.width = wrapRectWidth + 'px';
-                    this.style.height = wrapRectHeight + 'px';
+            for (var i = 0; i < zx.length; i++) {
+                zx[i].addEventListener('mouseenter', function (event) {
+                    smImg = this.firstChild;
+                    lgImg = this.lastChild;
+                    zxWidth = smImg.width;
+                    zxHeight = smImg.height;
+                    this.style.width = zxWidth + 'px';
+                    this.style.height = zxHeight + 'px';
                     lgImg.src = smImg.getAttribute(lgImgData);
+                    lgImg.style.cssText = 'max-width: none';
+                    smImg.style.cssText = 'position: absolute; left: 0; top: 0; max-width: 100%';
+                    lgImg.style.willChange = 'transform';
+
+                    setTimeout(function() { 
+                        lgImg.style.transition = 'transform 0.3s ease-out';
+                     }, 300);
                     
+                    
+                });
+                zx[i].addEventListener('mousemove', function (event) {
+                    mouseX = event.clientX - this.getBoundingClientRect().left;
+                    mouseY = event.clientY - this.getBoundingClientRect().top;
 
-                    lgImg.style.cssText='position: 0; max-width: none; transition: transform 0.1s linear';
-                    smImg.style.cssText='position: absolute; left: 0; top: 0;max-width: 100%';
-
-
-                    //if(imgRectWidth > wrapRectWidth && imgRectHeight >  wrapRectHeight){
-                        imgX = mouseX * -((imgRectWidth - wrapRectWidth) / wrapRectWidth);
-                        imgY = mouseY * -((imgRectHeight - wrapRectHeight) / wrapRectHeight);
+                    //if(imgRectWidth > zxWidth && imgRectHeight >  zxHeight){
+                        imgX = mouseX * -((lgImg.width - zxWidth) / zxWidth);
+                        imgY = mouseY * -((lgImg.height - zxHeight) / zxHeight);
                         lgImg.style.transform = 'translate(' + (imgX) + 'px,' + (imgY) + 'px)';
+
                     //}
                 });
-                zxWrap[i].addEventListener('mouseleave', function (event) {
-                    this.lastChild.style.cssText='max-width: 100%; width: '+ this.firstChild.width + 'px; height' + this.firstChild.height + 'px';
+                zx[i].addEventListener('mouseleave', function (event) {
+                    lgImg.style.cssText='max-width: 100%; width: '+ smImg.width + 'px; height:' + smImg.height + 'px';
                     this.style.cssText = 'position: relative; overflow: hidden'
                 });
-                zxWrap[i].addEventListener('click', function (event) {
+                zx[i].addEventListener('click', function (event) {
                     this.firstChild.click();
                 });
             }
             window.addEventListener('resize', function(){
-                for (var i = 0; i < zxWrap.length; i++) {
-                    zxWrap[i].lastChild.style.width = '';
-                    //zxWrap[i].lastChild.style.height = '';
+                for (var i = 0; i < zx.length; i++) {
+                    zx[i].lastChild.style.width = '';
                 }
             });
         }
@@ -80,35 +90,36 @@
 
 if(onLoadWindowWidth >= breakWidth) {
 
-function one(){
-    var zxGallerySelect = document.querySelectorAll('img[data-zoomarallax]');
-    if (zxGallerySelect.length > 0){
+    var zxGallerySelect = document.querySelectorAll('.gallery_img');
+    function zxGalleryInit(){
         var zxGallery =  new Zoomarallax({
             imgSelector: zxGallerySelect,
-            largeImgData: 'data-zoomarallax'
-        });
-    }
-}
-one();
-
-function two(){
-var zxSliderSelect = document.querySelectorAll('img[data-ami-mbpopup]');
-
-if (zxSliderSelect.length > 0){
-        var zxSlider =  new Zoomarallax({
-            imgSelector: zxSliderSelect,
             largeImgData: 'data-ami-mbpopup'
         });
     }
-
-}
-two();
-/*
-    var zxSliderOpt = {
-        imgSelector: 'img[data-zoomarallax]',
-        largeImgData: 'data-zoomarallax'
+    if (zxGallerySelect.length > 0){
+        zxGalleryInit();
     }
-    var zxSlider =  new Zoomarallax(zxSliderOpt);
-*/
+    var zxGalleryLinkSelect = document.querySelectorAll('.gallery-link_img');
+    function zxGalleryLinkInit(){
+        var zxGalleryLink =  new Zoomarallax({
+            imgSelector: zxGalleryLinkSelect,
+            largeImgData: 'data-zoomarallax'
+        });
+    }
+    if (zxGalleryLinkSelect.length > 0){
+        zxGalleryLinkInit();
+    }
+
+    var zxSliderSelect = document.querySelectorAll('#multiSlider img[data-zoomarallax]');
+    function zxSliderInit(){
+        var zxSlider =  new Zoomarallax({
+            imgSelector: zxSliderSelect,
+            largeImgData: 'data-zoomarallax'
+        });
+    }
+    if (zxSliderSelect.length > 0){
+        zxSliderInit();
+    }
 
 }
